@@ -452,7 +452,7 @@ const deletePc = (index: number, i: CharItem) => {
   store.pcList.splice(index, 1);
     logMan.deleteByCharItem(i);
   }).catch(() => {
-    i.name = lastPCName;
+    // i.name = lastPCName;
   })
 }
 
