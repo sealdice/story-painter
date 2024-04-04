@@ -88,6 +88,7 @@ function checkboxes(view: EditorView) {
       enter: (type, from, to) => {
         if (type.name.startsWith("image-")) {
           const text = view.state.doc.sliceString(from, to)
+          // ob11 - gocq
           let m = /url=([^\]]+)]/.exec(text) as RegExpExecArray
           if (m) {
             let deco = Decoration.widget({
@@ -101,6 +102,36 @@ function checkboxes(view: EditorView) {
           if (m) {
             let deco = Decoration.widget({
               widget: new CheckboxWidget(m[1]),
+              side: 0
+            })
+            widgets.push(deco.range(to))
+          }
+
+          // ob11 - lagrange
+          m = /file=(https?:\/\/[^\]]+)\]/.exec(text) as RegExpExecArray
+          if (m) {
+            let deco = Decoration.widget({
+              widget: new CheckboxWidget(m[1]),
+              side: 0
+            })
+            widgets.push(deco.range(to))
+          }
+
+          // ob11 - llob(new)
+          m = /file=([A-Za-z0-9]{32,64})(\.[a-zA-Z]+?)\]/.exec(text) as RegExpExecArray
+          if (m) {
+            let deco = Decoration.widget({
+              widget: new CheckboxWidget(`https://gchat.qpic.cn/gchatpic_new/0/0-0-${m[1]}/0?term=2,subType=1`),
+              side: 0
+            })
+            widgets.push(deco.range(to))
+          }
+
+          // ob11 - llob(old)
+          m = /file=file:\/\/[^\]]+([A-Za-z0-9]{32})(\.[a-zA-Z]+?)\]/.exec(text) as RegExpExecArray
+          if (m) {
+            let deco = Decoration.widget({
+              widget: new CheckboxWidget(`https://gchat.qpic.cn/gchatpic_new/0/0-0-${m[1].toUpperCase()}/0?term=2,subType=1`),
               side: 0
             })
             widgets.push(deco.range(to))
@@ -171,8 +202,7 @@ const createEditor = (editorContainer: any, doc: any) => {
 
 const startState = EditorState.create({
   //doc为编辑器默认内容
-  doc: `
-海豹一号机(2589922907) 2022/03/21 19:05:05
+  doc: `海豹一号机(2589922907) 2022/03/21 19:05:05
 新的故事开始了，祝旅途愉快！
 记录已经开启。
 
