@@ -78,7 +78,7 @@
 
           <div>
             <div class="switch">
-              <n-switch v-model:value="darkMode"/>
+              <n-switch v-model:value="isDark" @change="useToggle"/>
               <h4>深色模式</h4>
             </div>
             <div>启用深色模式，适合夜间使用</div>
@@ -178,8 +178,10 @@ import { setCharInfo } from './logManager/importers/_logImpoter'
 import { msgCommandFormat, msgImageFormat, msgIMUseridFormat, msgOffTopicFormat, msgAtFormat } from "./utils";
 import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui";
 import { User, LogoGithub } from '@vicons/carbon'
+import { useDark, useToggle } from '@vueuse/core'
 
-const darkMode = defineModel<boolean>();
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
 // 不用他了 虽然很不错，但是没有屏幕取色
 // import { ColorPicker } from 'vue-color-kit'

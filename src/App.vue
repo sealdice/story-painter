@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import Main from "~/Main.vue";
 import { darkTheme, lightTheme } from "naive-ui";
-import { ref } from "vue";
 
-const darkMode = ref<boolean>(false)
+import { useDark } from '@vueuse/core'
+
+const isDark = useDark()
 </script>
 
 <template>
-  <n-config-provider :theme="darkMode ? darkTheme : lightTheme">
+  <n-config-provider :theme="isDark ? darkTheme : lightTheme">
     <n-message-provider>
       <n-modal-provider>
         <n-notification-provider>
-          <Main v-model="darkMode"/>
+          <Main/>
         </n-notification-provider>
       </n-modal-provider>
     </n-message-provider>
