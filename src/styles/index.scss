@@ -1,9 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-// :root {
-//   --el-color-primary: red;
-// }
 
 body {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
@@ -12,15 +9,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   font-size: 16px;
-}
-
-a {
-  color: var(--el-color-primary);
-}
-
-code {
-  border-radius: 2px;
-  padding: 2px 4px;
-  background-color: var(--el-color-primary-light-9);
-  color: var(--el-color-primary);
 }

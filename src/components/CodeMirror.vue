@@ -315,7 +315,6 @@ onMounted(() => {
 
 .codemirror {
   height: 50rem;
-  background: #fff;
 }
 
 .test {
