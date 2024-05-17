@@ -22,6 +22,7 @@ declare module 'vue' {
     NSwitch: typeof import('naive-ui')['NSwitch']
     NTag: typeof import('naive-ui')['NTag']
     NTooltip: typeof import('naive-ui')['NTooltip']
+    OptionView: typeof import('./components/OptionView.vue')['default']
     PreviewBbs: typeof import('./components/previews/preview-bbs.vue')['default']
     PreviewBbsItem: typeof import('./components/previews/preview-bbs-item.vue')['default']
     PreviewMain: typeof import('./components/previews/preview-main.vue')['default']
