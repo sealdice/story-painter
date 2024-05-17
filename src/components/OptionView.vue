@@ -51,7 +51,7 @@ const list: Option[] = [
 </script>
 
 <template>
-    <n-grid :cols="2" :x-gap="6" :y-gap="12" class="p-5">
+    <n-grid cols="1 640:2" :x-gap="6" :y-gap="12" class="p-5">
         <n-grid-item v-for="opt in list">
             <n-switch v-model:value="option_store[opt.key]"></n-switch>
             <label class="ml-5">{{ opt.label }}</label>
