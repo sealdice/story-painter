@@ -1,9 +1,7 @@
 <template>
-  <NConfigProvider>
-    <div id="e" ref="editor" class="codemirror" style="position: relative;">
-      <slot></slot>
-    </div>
-  </NConfigProvider>
+  <div id="e" ref="editor" class="codemirror" style="position: relative;">
+    <slot></slot>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -43,6 +41,7 @@ store._reloadEditor = reloadEditor
 function getExts(highlight = false) {
   return [
     basicSetup,
+    EditorView.lineWrapping,
     history(),
     keymap.of([
       ...standardKeymap,

@@ -28,7 +28,13 @@
             <div v-for="(i, index) in store.pcList">
               <div style="display: flex; align-items: center; width: 26rem;">
                 <n-button type="error" size="small" tertiary style="padding: 0 1rem " @click="deletePc(index, i)"
-                          :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewTRG">删除
+                          :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewTRG">
+                  <template #icon>
+                    <n-icon>
+                      <icon-delete></icon-delete>
+                    </n-icon>
+                  </template>
+                  <span v-if="notMobile">删除</span>
                 </n-button>
 
                 <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewTRG" v-model:value="i.name"
@@ -49,10 +55,10 @@
 
           <n-flex size="small" justify="center" align="center" class="my-4">
             <n-flex size="small" justify="center" align="center" class="mr-2">
-              <n-button type="primary" @click="exportRecordRaw">下载原始文件</n-button>
-              <n-button type="primary" v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>
-              <n-button type="primary" v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>
-              <n-button type="primary" @click="exportRecordDOC">下载Word</n-button>
+              <n-button secondary type="primary" @click="exportRecordRaw">下载原始文件</n-button>
+              <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>-->
+              <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>-->
+              <n-button secondary type="primary" @click="exportRecordDOC">下载Word</n-button>
             </n-flex>
             <!-- <n-button @click="showPreview">预览</n-button> -->
             <div>
@@ -65,21 +71,26 @@
             </div>
             <n-divider vertical/>
             <div>
-              <n-button type="primary" text @click="refreshColors">刷新色板</n-button>
+              <n-tooltip class="box-item" placement="top-start">
+                <template #trigger>
+                  <n-button type="primary" text @click="refreshColors">刷新色板</n-button>
+                </template>
+                重新随机生成上方颜色选择中的预置颜色
+              </n-tooltip>
             </div>
           </n-flex>
 
           <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewTRG)" ref="editor"
                        @change="onChange">
-            <div style="z-index: 1000; position: absolute; right: 1rem" class="flex flex-col items-end">
-              <div class="w-full">
+            <div class="z-50 absolute right-2 flex flex-col items-center">
+              <div class="">
                 <n-button secondary @click="clearText" id="btnCopyPreviewBBS" type="primary" class="w-full">清空内容
                 </n-button>
               </div>
-              <div class="mt-1 w-full">
-                <n-button secondary @click="doFlush" type="primary" class="w-full">调试：Flush</n-button>
+              <div class="mt-1">
+                <n-button secondary @click="doFlush" type="primary" class="w-full">手动刷新</n-button>
               </div>
-              <div class="mt-1 w-full">
+              <div class="mt-1">
                 <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false" class="w-full"
                             @click.native="doEditorHighlightClick($event)"/>
               </div>
@@ -117,10 +128,13 @@ import { LogItem, CharItem, packNameId } from "./logManager/types";
 import { setCharInfo } from './logManager/importers/_logImpoter'
 import { msgCommandFormat, msgImageFormat, msgIMUseridFormat, msgOffTopicFormat, msgAtFormat } from "./utils";
 import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui";
-import { User, LogoGithub } from '@vicons/carbon'
-import { useDark, useToggle } from '@vueuse/core'
+import { User, LogoGithub, Delete as IconDelete } from '@vicons/carbon'
+import {  breakpointsTailwind, useBreakpoints, useDark, useToggle } from '@vueuse/core'
 import OptionView from "./components/OptionView.vue";
 import randomColor from "randomcolor";
+
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const notMobile = breakpoints.greater('sm')
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
