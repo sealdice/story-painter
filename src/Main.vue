@@ -390,6 +390,12 @@ store.colorMapLoad();
 // 修改ot选项后重建items
 watch(() => store.exportOptions.offTopicHide, showPreview)
 
+const editor = ref()
+watch(isDark, () => {
+  console.log('dark watch')
+  store.reloadEditor()
+})
+
 const deletePc = (index: number, i: CharItem) => {
   const now = Date.now();
   if (now - lastNameChange < 100) return;

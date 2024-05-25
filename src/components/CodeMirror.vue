@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import type { DecorationSet } from "@codemirror/view"
+import { DecorationSet, highlightActiveLine } from "@codemirror/view"
 import {
   lineNumbers,
   ViewPlugin,
@@ -21,11 +21,14 @@ import {
 import { EditorState, StateEffect } from '@codemirror/state';
 import { standardKeymap, insertTab, history, historyKeymap } from '@codemirror/commands';
 import { syntaxTree } from "@codemirror/language"
+import { materialDark, materialLight } from '@uiw/codemirror-theme-material';
 import { generateLang } from '~/utils/highlight';
 import { useStore } from '~/store'
+import { useDark } from "@vueuse/core";
 
 const editor = ref<HTMLDivElement>()
 const store = useStore()
+const isDark = useDark()
 
 const emit = defineEmits<(e: 'change', v: ViewUpdate) => void>();
 
@@ -41,6 +44,7 @@ function getExts(highlight = false) {
   return [
     history(),
     EditorView.lineWrapping,
+    highlightActiveLine(),
     lineNumbers(),
     keymap.of([
       ...standardKeymap,
@@ -52,7 +56,6 @@ function getExts(highlight = false) {
       },
     ]),
     checkboxPlugin,
-
     ...highlight ? generateLang(store.pcList, store.exportOptions) : [],
     EditorView.updateListener.of((v: ViewUpdate) => {
       if (v.docChanged) {
@@ -60,6 +63,7 @@ function getExts(highlight = false) {
         // temp1.view.state.doc.toString()
       }
     }),
+    isDark.value ? materialDark : materialLight,
   ]
 }
 
