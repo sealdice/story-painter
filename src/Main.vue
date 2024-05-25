@@ -4,7 +4,7 @@
       <n-flex class="py-2 text-2xl" size="large" align="center" justify="center" wrap>
         <n-flex align="center" justify="center">
           <strong>海豹TRPG跑团Log着色器</strong>
-          <n-tag type="success" size="small" :bordered="false">v2.4.1</n-tag>
+          <n-tag type="success" size="small" :bordered="false">v2.4.2</n-tag>
         </n-flex>
         <n-flex align="center" justify="center">
           <n-icon>
@@ -48,12 +48,12 @@
           </div>
 
           <n-flex size="small" justify="center" align="center" class="my-4">
-            <div>
-              <n-button @click="exportRecordRaw">下载原始文件</n-button>
-              <n-button v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>
-              <n-button v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>
-              <n-button @click="exportRecordDOC">下载Word</n-button>
-            </div>
+            <n-flex size="small" justify="center" align="center" class="mr-2">
+              <n-button type="primary" @click="exportRecordRaw">下载原始文件</n-button>
+              <n-button type="primary" v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>
+              <n-button type="primary" v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>
+              <n-button type="primary" @click="exportRecordDOC">下载Word</n-button>
+            </n-flex>
             <!-- <n-button @click="showPreview">预览</n-button> -->
             <div>
               <n-checkbox label="预览" v-model:checked="isShowPreview" :border="true"
@@ -71,16 +71,18 @@
 
           <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewTRG)" ref="editor"
                        @change="onChange">
-            <div style="z-index: 1000; position: absolute; right: 1rem">
-              <div>
-                <n-button @click="clearText" id="btnCopyPreviewBBS" style="" size="large" type="primary">清空内容
+            <div style="z-index: 1000; position: absolute; right: 1rem" class="flex flex-col items-end">
+              <div class="w-full">
+                <n-button secondary @click="clearText" id="btnCopyPreviewBBS" type="primary" class="w-full">清空内容
                 </n-button>
               </div>
-              <div>
-                <n-button @click="doFlush" style="" size="large" type="primary">调试:Flush</n-button>
+              <div class="mt-1 w-full">
+                <n-button secondary @click="doFlush" type="primary" class="w-full">调试：Flush</n-button>
               </div>
-              <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false"
-                          @click.native="doEditorHighlightClick($event)"/>
+              <div class="mt-1 w-full">
+                <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false" class="w-full"
+                            @click.native="doEditorHighlightClick($event)"/>
+              </div>
             </div>
           </code-mirror>
 
@@ -165,6 +167,7 @@ const clearText = () => {
 }
 
 const doFlush = () => {
+  console.log('flush')
   logMan.flush();
 }
 
@@ -300,6 +303,11 @@ onMounted(async () => {
   // console.log(cminstance.value)
   colors.value = randomColor({ count: 16 })
   browserAlert()
+  await nextTick(() => {
+    setTimeout(() => {
+      doFlush()
+    }, 3000)
+  })
 });
 
 function exportRecordRaw() {
@@ -590,6 +598,9 @@ const doEditorHighlightClick = (e: any) => {
                 onClick: () => {
                   store.doEditorHighlight = false
                   m.destroy()
+                  setTimeout(() => {
+                    doFlush()
+                  }, 3000)
                 },
                 style: { marginRight: '1rem' }
               },

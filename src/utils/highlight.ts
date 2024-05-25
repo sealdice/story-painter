@@ -1,5 +1,11 @@
 import { Tag } from "@lezer/highlight"
-import { LanguageSupport, StreamLanguage, HighlightStyle, TagStyle, syntaxHighlighting } from "@codemirror/language"
+import {
+  LanguageSupport,
+  StreamLanguage,
+  HighlightStyle,
+  TagStyle,
+  syntaxHighlighting,
+} from "@codemirror/language"
 import { completeFromList } from "@codemirror/autocomplete"
 import { CharItem } from "~/logManager/types"
 import { Extension } from "@codemirror/state";
@@ -76,6 +82,7 @@ export function generateLang(pcList: CharItem[], options: any = undefined): Exte
   }
 
   const language = StreamLanguage.define<{ mode: number, name: string, nextN: string[], text: string, pc: CharItem }>({
+    name: 'story-log',
     startState() {
       return {
         mode: 0,
