@@ -40,15 +40,14 @@
                 <n-select v-model:value="i.role" class="m-2 w-60" style="width: 24rem"
                           :options="[{value: '主持人', label: '主持人'}, {value: '角色', label: '角色'}, {value: '骰子', label: '骰子'}, {value: '隐藏', label: '隐藏'}]"/>
 
-                <input type="color" v-model.lazy="i.color"
-                       style="min-width: 2.5rem; margin-left: 0.2rem; border-color: #aaa; border-radius: 3px;"
-                       @change="debounceInput(i)"/>
+                <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview
+                                :swatches="colors"
+                                @change="debounceInput(i)"/>
               </div>
             </div>
           </div>
 
-          <div
-              style="margin-bottom: 1rem; margin-top: 1rem; display: flex; justify-content: center; align-items: center; flex-wrap: wrap;">
+          <n-flex size="small" justify="center" align="center" class="my-4">
             <div>
               <n-button @click="exportRecordRaw">下载原始文件</n-button>
               <n-button v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>
@@ -56,7 +55,7 @@
               <n-button @click="exportRecordDOC">下载Word</n-button>
             </div>
             <!-- <n-button @click="showPreview">预览</n-button> -->
-            <div style="margin-left: 1rem; ">
+            <div>
               <n-checkbox label="预览" v-model:checked="isShowPreview" :border="true"
                           @click="previewClick('preview')"/>
               <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true"
@@ -64,7 +63,11 @@
               <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true"
                           @click="previewClick('trg')"/>
             </div>
-          </div>
+            <n-divider vertical/>
+            <div>
+              <n-button type="primary" text @click="refreshColors">刷新色板</n-button>
+            </div>
+          </n-flex>
 
           <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewTRG)" ref="editor"
                        @change="onChange">
@@ -115,6 +118,7 @@ import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui"
 import { User, LogoGithub } from '@vicons/carbon'
 import { useDark, useToggle } from '@vueuse/core'
 import OptionView from "./components/OptionView.vue";
+import randomColor from "randomcolor";
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
@@ -135,6 +139,12 @@ const downloadUsableRank = ref(0)
 const isShowPreview = ref(false)
 const isShowPreviewBBS = ref(false)
 const isShowPreviewTRG = ref(false)
+
+const colors = ref<string[]>([])
+const refreshColors = () => {
+  colors.value = randomColor({ count: 16 })
+  message.success("色板刷新成功！", { duration: 800 })
+}
 
 const debounceInput = debounce(function (i) {
   store.pcNameColorMap.set(i.name, i.color)
@@ -288,6 +298,7 @@ onMounted(async () => {
   // cminstance.value = cmRefDom.value?.cminstance;
   // cminstance.value?.focus();
   // console.log(cminstance.value)
+  colors.value = randomColor({ count: 16 })
   browserAlert()
 });
 
