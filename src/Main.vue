@@ -384,7 +384,6 @@ function showPreview() {
 }
 
 const store = useStore()
-const color2 = ref('#409EFF')
 store.colorMapLoad();
 
 // 修改ot选项后重建items
