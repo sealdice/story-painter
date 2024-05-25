@@ -1,7 +1,7 @@
 <template>
   <n-layout>
     <n-layout-header>
-      <n-flex class="py-2 text-2xl" size="large" align="center" justify="center" wrap>
+      <n-flex class="py-3 text-2xl" size="large" align="center" justify="center" wrap>
         <n-flex align="center" justify="center">
           <strong>海豹TRPG跑团Log着色器</strong>
           <n-tag type="success" size="small" :bordered="false">v2.5.0</n-tag>
@@ -81,6 +81,7 @@
           </n-flex>
 
           <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewTRG)" ref="editor"
+                       class="mt-4 mb-6"
                        @change="onChange">
             <div class="z-50 absolute right-2 flex flex-col items-center">
               <div class="">
