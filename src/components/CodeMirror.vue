@@ -98,7 +98,7 @@ function checkboxes(view: EditorView) {
   for (let { from, to } of view.visibleRanges) {
     syntaxTree(view.state).iterate({
       from, to,
-      enter: (type, from, to) => {
+      enter: ({type, from, to}) => {
         if (type.name.startsWith("image-")) {
           const text = view.state.doc.sliceString(from, to)
           // ob11 - gocq
