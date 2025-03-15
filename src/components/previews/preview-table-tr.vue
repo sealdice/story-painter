@@ -4,7 +4,7 @@
       <td :style="{ 'color': colorByName(source) }" style="border: none;width: 120px;" class="_nickname">
         {{ nicknameSolve(source) }}
       </td>
-      <td :style="{ 'color': colorByName(source) }" style="border: none;border-left: 1px solid black;padding-left: 25px;" v-html="previewMessageSolve(source)"></td>
+      <td :style="{ 'color': colorByName(source) }" style="border: none;border-left: 1px solid black;padding-left: 20px;" v-html="previewMessageSolve(source)"></td>
     </tr>
   </template>
   
