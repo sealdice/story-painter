@@ -10,6 +10,7 @@ import { CharItem, LogItem } from "./types";
 import { DiceKokonaLogImporter } from "./importers/DiceKokonaLogImporter";
 import { RenderedLogImporter } from "./importers/RenderedLogImporter";
 import { FvttLogImporter } from "./importers/FvttLogImporter";
+import { PaintedLogImporter } from "./importers/PaintedLogImporter";
 
 
 export class LogManager {
@@ -26,6 +27,7 @@ export class LogManager {
     ['dice!', new DiceKokonaLogImporter(this)],
     ['rendered', new RenderedLogImporter(this)],
     ['fvtt', new FvttLogImporter(this)],
+	["painted", new PaintedLogImporter(this)],
   ]
 
   exporters = {
