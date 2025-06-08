@@ -293,10 +293,6 @@ onMounted(async () => {
         updated_at: string,
       }
 
-
-      // await new Promise<void>((resolve) => {
-      //   new setTimeout(() => { resolve() }, 1000)
-      // })
       switch(record.client) {
         case 'Parquet' : {
           const uint8 = Uint8Array.from(atob(record.data), c => c.charCodeAt(0))
@@ -325,7 +321,9 @@ onMounted(async () => {
           });
         }
         break
-        case 'SealDice': {
+        case 'SealDice': 
+        default:
+        {
           const log = unzlibSync(Uint8Array.from(atob(record.data), c => c.charCodeAt(0)));
 
           nextTick(() => {
@@ -334,9 +332,7 @@ onMounted(async () => {
     
             logMan.lastText = '';
             logMan.syncChange(text, [0, store.editor.state.doc.length], [0, text.length])
-            // store.editor.dispatch({
-            //   changes: { from: 0, to: store.editor.state.doc.length, insert: text }
-            // })
+
           });
         }
         break
