@@ -28,7 +28,7 @@
             <div v-for="(i, index) in store.pcList">
               <div style="display: flex; align-items: center; width: 26rem;">
                 <n-button type="error" size="small" secondary style="padding: 0 1rem " @click="deletePc(index, i)"
-                          :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewTRG">
+                          :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
                   <template #icon>
                     <n-icon>
                       <icon-delete></icon-delete>
@@ -37,7 +37,7 @@
                   <span v-if="notMobile">删除</span>
                 </n-button>
 
-                <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewTRG" v-model:value="i.name"
+                <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG" v-model:value="i.name"
                          class="w-50 m-2"
                          :prefix-icon="User" @focus="nameFocus(i)" @change="nameChanged(i)"/>
 
@@ -67,6 +67,8 @@
                           @click="previewClick('preview')"/>
               <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true"
                           @click="previewClick('bbs')"/>
+              <n-checkbox label="论坛代码（菠萝）" v-model:checked="isShowPreviewBBSPineapple" :border="true"
+                          @click="previewClick('bbspineapple')"/>
               <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true"
                           @click="previewClick('trg')"/>
             </div>
@@ -81,7 +83,7 @@
             </div>
           </n-flex>
 
-          <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewTRG)" ref="editor"
+          <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)" ref="editor"
                        class="mt-4"
                        @change="onChange">
             <div class="z-50 absolute right-2 flex flex-col items-center">
@@ -102,6 +104,7 @@
           <n-message-provider>
             <preview-main :is-show="isShowPreview" :preview-items="previewItems"></preview-main>
             <preview-bbs :is-show="isShowPreviewBBS" :preview-items="previewItems"></preview-bbs>
+            <preview-bbs-pineapple :is-show="isShowPreviewBBSPineapple" :preview-items="previewItems"></preview-bbs-pineapple>
             <preview-trg :is-show="isShowPreviewTRG" :preview-items="previewItems"></preview-trg>
           </n-message-provider>
         </n-spin>
@@ -124,6 +127,7 @@ import { ViewUpdate } from "@codemirror/view";
 import { TextInfo } from "./logManager/importers/_logImpoter";
 import previewMain from "./components/previews/preview-main.vue";
 import previewBbs from "./components/previews/preview-bbs.vue";
+import previewBbsPineapple from "./components/previews/preview-bbs-pineapple.vue";
 import previewTrg from "./components/previews/preview-trg.vue";
 import PreviewItem from './components/previews/preview-main-item.vue'
 import PreviewTableTR from './components/previews/preview-table-tr.vue'
@@ -162,6 +166,7 @@ const downloadUsableRank = ref(0)
 
 const isShowPreview = ref(false)
 const isShowPreviewBBS = ref(false)
+const isShowPreviewBBSPineapple = ref(false)
 const isShowPreviewTRG = ref(false)
 
 const colors = ref<string[]>([])
@@ -193,20 +198,29 @@ const doFlush = () => {
   logMan.flush();
 }
 
-const previewClick = (mode: 'preview' | 'bbs' | 'trg') => {
+const previewClick = (mode: 'preview' | 'bbs' | 'bbspineapple' | 'trg') => {
   switch (mode) {
     case 'preview':
       isShowPreviewBBS.value = false
+      isShowPreviewBBSPineapple.value = false
       isShowPreviewTRG.value = false
       break;
     case 'bbs':
       isShowPreview.value = false
+      isShowPreviewBBSPineapple.value = false
+      isShowPreviewTRG.value = false
+      store.exportOptions.imageHide = true
+      break;
+    case 'bbspineapple':
+      isShowPreview.value = false
+      isShowPreviewBBS.value = false
       isShowPreviewTRG.value = false
       store.exportOptions.imageHide = true
       break;
     case 'trg':
       isShowPreview.value = false
       isShowPreviewBBS.value = false
+      isShowPreviewBBSPineapple.value = false
       store.exportOptions.imageHide = true
       break;
   }
