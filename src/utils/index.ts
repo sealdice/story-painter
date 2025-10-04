@@ -122,10 +122,7 @@ export function msgIMUseridFormat(msg: string, options: any, isDice = false) {
 // kook的回复是 (met)176031111(met)
 export function msgAtFormat(msg: string, pcList: any) {
   // qq的回复会给出两个连续的相同CQ码，如[CQ:at,qq=123456] [CQ:at,qq=123456]，预先处理只保留一个
-  let qqReplyPattern = new RegExp(
-    `(\\[CQ:at,qq=([0-9]+)(?:,[^\\]]*)?\\]) \\[CQ:at,qq=([0-9]+)(?:,[^\\]]*)?\\]`,
-    "g"
-  );
+  let qqReplyPattern = /((\[CQ:at,[^\]]*qq=([0-9]+)[^\]]*\])) \[CQ:at,[^\]]*qq=\3[^\]]*\]/g;
   if (msg.match(qqReplyPattern)) {
     const match = msg.match(qqReplyPattern);
     if (match) {
@@ -140,16 +137,35 @@ export function msgAtFormat(msg: string, pcList: any) {
     }
   }
 
-  // 新版CQ码中可能附带name参数，优先用角色信息回填，缺失时退化为name字段
-  msg = msg.replace(/\[CQ:at,qq=([0-9]+)(?:,[^\]]*?name=([^,\]]+))?[^\]]*\]/g, (_match, qq, name) => {
-    const mappedName = pcMap.get(String(qq));
+  const decodeHTML = (text: string) => {
+    const div = document.createElement('div');
+    div.innerHTML = text;
+    return div.textContent || '';
+  };
+
+  // 兼容旧版与新版CQ码，支持附带name参数
+  msg = msg.replace(/\[CQ:at,([^\]]+)\]/g, (_match, attrStr) => {
+    const attrs = attrStr.split(',');
+    const attrMap = new Map<string, string>();
+    for (const part of attrs) {
+      const [key, ...rest] = part.split('=');
+      if (!key) continue;
+      attrMap.set(key.trim(), rest.join('=') || '');
+    }
+    const qq = attrMap.get('qq') || '';
+    const mappedName = pcMap.get(qq);
     if (mappedName) {
       return `@${mappedName}`;
     }
-    if (name) {
-      return name.startsWith('@') ? name : `@${name}`;
+    const nameAttr = attrMap.get('name');
+    if (nameAttr) {
+      const decoded = decodeHTML(nameAttr);
+      return decoded.startsWith('@') ? decoded : `@${decoded}`;
     }
-    return `@${qq}`;
+    if (qq) {
+      return `@${qq}`;
+    }
+    return '@未知用户';
   });
 
   for (let i of pcList) {
