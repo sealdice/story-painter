@@ -58,10 +58,11 @@ const nameReplace = (msg: string) => {
   return msg;
 };
 
-const colorByName = (item: LogItem, map = store.pcMap) => {
+const colorByName = (item: LogItem, map = store.pcMap): string => {
   const info = map.get(packNameId(item));
   if (store.bbsUseColorName) {
-    return store.colorHexToName(info?.color || '#ffffff');
+    const color = store.colorHexToName(info?.color || '#ffffff');
+    return color || 'silver';
   }
   return info?.color || '#ffffff';
 };
