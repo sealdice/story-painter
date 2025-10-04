@@ -107,8 +107,8 @@ const formattedItems = computed(() => {
   let current: PineappleBlock | null = null;
 
   for (const entry of props.previewItems) {
-    const info = map.get(packNameId(entry));
-    if (entry.isRaw || info?.role === '隐藏') continue;
+    if (entry.isRaw) continue;
+    if (store.isHiddenLogItem(entry)) continue;
 
     const text = normalizeMessage(entry);
     if (!text) continue;
