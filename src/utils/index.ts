@@ -123,7 +123,7 @@ export function msgIMUseridFormat(msg: string, options: any, isDice = false) {
 export function msgAtFormat(msg: string, pcList: any) {
   // qq的回复会给出两个连续的相同CQ码，如[CQ:at,qq=123456] [CQ:at,qq=123456]，预先处理只保留一个
   let qqReplyPattern = new RegExp(
-    `(\\[CQ:at,qq=([0-9]+)\\]) \\[CQ:at,qq=([0-9]+)\\]`,
+    `(\\[CQ:at,qq=([0-9]+)(?:,[^\\]]*)?\\]) \\[CQ:at,qq=([0-9]+)(?:,[^\\]]*)?\\]`,
     "g"
   );
   if (msg.match(qqReplyPattern)) {
@@ -133,11 +133,26 @@ export function msgAtFormat(msg: string, pcList: any) {
     }
   }
 
+  const pcMap = new Map<string, string>();
   for (let i of pcList) {
-    // QQ的回复是CQ码 [CQ:at,qq=12345678]
-    let qqAtPattern = new RegExp(`\\[CQ:at,qq=${i.IMUserId}\\]`, "g");
-    msg = msg.replace(qqAtPattern, `@${i.name}`);
+    if (i?.IMUserId) {
+      pcMap.set(String(i.IMUserId), i.name);
+    }
+  }
 
+  // 新版CQ码中可能附带name参数，优先用角色信息回填，缺失时退化为name字段
+  msg = msg.replace(/\[CQ:at,qq=([0-9]+)(?:,[^\]]*?name=([^,\]]+))?[^\]]*\]/g, (_match, qq, name) => {
+    const mappedName = pcMap.get(String(qq));
+    if (mappedName) {
+      return `@${mappedName}`;
+    }
+    if (name) {
+      return name.startsWith('@') ? name : `@${name}`;
+    }
+    return `@${qq}`;
+  });
+
+  for (let i of pcList) {
     // discord的回复是 <@8181007086111111>
     let discordAtPattern = new RegExp(`&lt;@${i.IMUserId}&gt;`, "g");
     msg = msg.replace(discordAtPattern, `@${i.name}`);
