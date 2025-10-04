@@ -29,6 +29,8 @@ declare module 'vue' {
     OptionView: typeof import('./components/OptionView.vue')['default']
     PreviewBbs: typeof import('./components/previews/preview-bbs.vue')['default']
     PreviewBbsItem: typeof import('./components/previews/preview-bbs-item.vue')['default']
+    PreviewBbsPineapple: typeof import('./components/previews/preview-bbs-pineapple.vue')['default']
+    PreviewBbsPineappleItem: typeof import('./components/previews/preview-bbs-pineapple-item.vue')['default']
     PreviewMain: typeof import('./components/previews/preview-main.vue')['default']
     PreviewMainItem: typeof import('./components/previews/preview-main-item.vue')['default']
     PreviewTableTr: typeof import('./components/previews/preview-table-tr.vue')['default']

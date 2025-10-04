@@ -421,7 +421,6 @@ function exportRecordDOC() {
     }
   }
 
-  const map = store.pcMap;
   const el = document.createElement('span');
   const elRoot = document.createElement('div');
   const items = [];
@@ -429,8 +428,7 @@ function exportRecordDOC() {
   showPreview()
   for (let i of previewItems.value) {
     if (i.isRaw) continue;
-    const id = packNameId(i);
-    if (map.get(id)?.role === '隐藏') continue;
+    if (store.isHiddenLogItem(i)) continue;
 
     const html = h(PreviewItem, { source: i });
     render(html, el);
@@ -465,7 +463,6 @@ function exportRecordTalkDOC() {
     }
   }
 
-  const map = store.pcMap;
   const el = document.createElement('span');
   const elRoot = document.createElement('div');
   const items = [];
@@ -473,8 +470,7 @@ function exportRecordTalkDOC() {
   showPreview()
   for (let i of previewItems.value) {
     if (i.isRaw) continue;
-    const id = packNameId(i);
-    if (map.get(id)?.role === '隐藏') continue;
+    if (store.isHiddenLogItem(i)) continue;
 
     const html = h(PreviewTableTR, { source: i });
     render(html, el);
@@ -490,13 +486,14 @@ function exportRecordTalkDOC() {
 const previewItems = ref<LogItem[]>([])
 
 function showPreview() {
-  let tmp = []
+  const tmp: LogItem[] = [];
   let index = 0;
   const offTopicHide = store.exportOptions.offTopicHide;
   console.log('当前日志条目数量: ', logMan.curItems.length)
 
   for (let i of logMan.curItems) {
     if (i.isRaw) continue;
+    if (store.isHiddenLogItem(i)) continue;
 
     // // 处理ot
     // if (offTopicHide && !i.isDice) {
@@ -523,6 +520,11 @@ store.colorMapLoad();
 
 // 修改ot选项后重建items
 watch(() => store.exportOptions.offTopicHide, showPreview)
+watch(
+  () => store.pcList.map(pc => `${pc.IMUserId}-${pc.role}-${pc.name}`),
+  () => showPreview(),
+  { deep: false }
+)
 
 const editor = ref()
 watch(isDark, () => {
