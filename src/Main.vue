@@ -4,7 +4,7 @@
       <n-flex class="py-3 text-2xl" size="large" align="center" justify="center" wrap>
         <n-flex align="center" justify="center">
           <strong>海豹TRPG跑团Log着色器</strong>
-          <n-tag type="success" size="small" :bordered="false">v2.5.2</n-tag>
+          <n-tag type="success" size="small" :bordered="false">v2.5.3</n-tag>
         </n-flex>
         <n-flex align="center" justify="center">
           <n-icon>
@@ -58,8 +58,9 @@
               <n-button secondary type="primary" @click="exportRecordRaw">下载原始文件</n-button>
               <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>-->
               <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>-->
-              <n-button secondary type="primary" @click="exportRecordDOC">下载Word</n-button>
-              <n-button secondary type="primary" @click="exportRecordTalkDOC">下载对话Word</n-button>
+              <n-button secondary type="primary" @click="exportRecordDOC">下载带图doc</n-button>
+              <n-button secondary type="primary" @click="exportRecordTalkDOC">下载对话doc</n-button>
+              <n-button secondary type="primary" @click="exportRecordDocx">下载docx</n-button>
             </n-flex>
             <!-- <n-button @click="showPreview">预览</n-button> -->
             <div>
@@ -67,7 +68,7 @@
                           @click="previewClick('preview')"/>
               <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true"
                           @click="previewClick('bbs')"/>
-              <n-checkbox label="论坛代码（菠萝）" v-model:checked="isShowPreviewBBSPineapple" :border="true"
+              <n-checkbox label="论坛代码(内容多行)" v-model:checked="isShowPreviewBBSPineapple" :border="true"
                           @click="previewClick('bbspineapple')"/>
               <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true"
                           @click="previewClick('trg')"/>
@@ -118,7 +119,8 @@ import { nextTick, ref, onMounted, watch, h, render, renderList, computed } from
 import { useStore } from './store'
 import CodeMirror from './components/CodeMirror.vue'
 import { debounce, delay } from 'lodash-es'
-import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc } from "./utils/exporter";
+import { exportFileRaw, exportFileQQ, exportFileIRC, exportFileDoc, exportFileDocx } from "./utils/exporter";
+import type { DocxExportEntry } from "./utils/exporter";
 import { strFromU8, unzlibSync } from 'fflate';
 import uaParser from 'ua-parser-js'
 
@@ -465,7 +467,7 @@ function exportRecordTalkDOC() {
 
   const el = document.createElement('span');
   const elRoot = document.createElement('div');
-  const items = [];
+  const items: string[] = [];
 
   showPreview()
   for (let i of previewItems.value) {
@@ -482,6 +484,87 @@ function exportRecordTalkDOC() {
   exportFileDoc(`<table style="border-collapse: collapse;"><tbody>${items.join('\n')}</tbody></table>`);
 }
 
+const readElementColor = (el: HTMLElement | null): string | undefined => {
+  if (!el) return undefined;
+  if (el.style && el.style.color) {
+    return el.style.color;
+  }
+  const computed = window.getComputedStyle(el);
+  return computed?.color || undefined;
+};
+
+const extractMessageLines = (el: HTMLElement | null): string[] => {
+  if (!el) return [''];
+  const clone = el.cloneNode(true) as HTMLElement;
+  const doc = el.ownerDocument || document;
+
+  clone.querySelectorAll('img').forEach((img) => {
+    const src = img.getAttribute('src') || '';
+    const placeholder = src ? `[图:${src}]` : '[图:无可用链接]';
+    img.replaceWith(doc.createTextNode(placeholder));
+  });
+
+  const text = clone.innerText.replace(/\u00A0/g, ' ');
+  const lines = text.split(/\r?\n/).map((line) => line.replace(/\u00A0/g, ' ').replace(/\s+$/g, ''));
+
+  while (lines.length > 1 && lines[lines.length - 1].trim() === '') {
+    lines.pop();
+  }
+
+  if (lines.length === 0) {
+    lines.push('');
+  }
+
+  return lines;
+};
+
+function exportRecordDocx() {
+  browserAlert()
+  showPreview()
+
+  const entries: DocxExportEntry[] = []
+
+  for (const item of previewItems.value) {
+    if (item.isRaw) continue
+    if (store.isHiddenLogItem(item)) continue
+
+    const mountPoint = document.createElement('div')
+    const vnode = h(PreviewItem, { source: item })
+    render(vnode, mountPoint)
+
+    const host = mountPoint.firstElementChild as HTMLElement | null
+    if (!host) {
+      render(null, mountPoint)
+      continue
+    }
+
+    const timeEl = host.querySelector('._time') as HTMLElement | null
+    const nicknameEl = host.querySelector('._nickname') as HTMLElement | null
+    const messageEl = host.querySelector('._message') as HTMLElement | null
+
+    const entry: DocxExportEntry = {
+      time: (timeEl?.textContent ?? '').trim(),
+      timeColor: readElementColor(timeEl),
+      nickname: (nicknameEl?.textContent ?? '').trim(),
+      nicknameColor: readElementColor(nicknameEl),
+      messageLines: extractMessageLines(messageEl),
+      messageColor: readElementColor(messageEl),
+    }
+
+    entries.push(entry)
+    render(null, mountPoint)
+  }
+
+  if (!entries.length) {
+    message.warning('没有可导出的内容')
+    return
+  }
+
+  exportFileDocx(entries, '跑团记录.docx').catch((err) => {
+    console.error(err)
+    message.error('Docx 导出失败，请稍后重试')
+  })
+}
 
 const previewItems = ref<LogItem[]>([])
 

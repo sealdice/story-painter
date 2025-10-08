@@ -1,6 +1,6 @@
 {
   "name": "story-painter",
-  "version": "2.5.2",
+  "version": "2.5.3",
   "private": true,
   "license": "MIT",
   "type": "module",
@@ -22,6 +22,7 @@
     "clipboard": "^2.0.11",
     "codemirror": "^6.0.1",
     "dayjs": "^1.11.13",
+    "docx": "^8.6.0",
     "fflate": "^0.8.2",
     "file-saver": "^2.0.5",
     "format-email": "^0.1.0",
