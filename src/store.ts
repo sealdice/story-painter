@@ -53,8 +53,8 @@ export const useStore = defineStore('main', {
     hiddenIdSet(state): Set<string> {
       const set = new Set<string>();
       for (const pc of state.pcList) {
-        if (pc.role === '隐藏' && pc.IMUserId) {
-          set.add(pc.IMUserId);
+        if (pc.role === '隐藏' && pc.IMUserId && pc.name) {
+          set.add(`${pc.IMUserId}-${pc.name}`);
         }
       }
       return set;
@@ -66,7 +66,7 @@ export const useStore = defineStore('main', {
       const id = packNameId(item);
       const pc = this.pcMap.get(id);
       if (pc?.role === '隐藏') return true;
-      if (item.IMUserId && this.hiddenIdSet.has(item.IMUserId)) return true;
+      if (item.IMUserId && this.hiddenIdSet.has(`${item.IMUserId}-${item.nickname}`)) return true;
       return false;
     },
     colorHexToName(color: string) {
