@@ -504,8 +504,82 @@ const extractMessageLines = (el: HTMLElement | null): string[] => {
     img.replaceWith(doc.createTextNode(placeholder));
   });
 
-  const text = clone.innerText.replace(/\u00A0/g, ' ');
-  const lines = text.split(/\r?\n/).map((line) => line.replace(/\u00A0/g, ' ').replace(/\s+$/g, ''));
+  const blockTags = new Set(['P', 'DIV', 'LI', 'UL', 'OL', 'BLOCKQUOTE']);
+  const lines: string[] = [];
+  let current = '';
+
+  const pushLine = (forceEmpty = false) => {
+    const normalized = current.replace(/\u00A0/g, ' ').replace(/\s+$/g, '');
+    if (normalized || forceEmpty || lines.length === 0) {
+      lines.push(normalized);
+    }
+    current = '';
+  };
+
+  const appendText = (text: string | null) => {
+    if (!text) return;
+    const normalized = text.replace(/\u00A0/g, ' ');
+    const segments = normalized.split(/\r?\n/);
+    segments.forEach((segment, index) => {
+      current += segment;
+      if (index < segments.length - 1) {
+        pushLine();
+      }
+    });
+  };
+
+  const processNode = (node: Node) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      appendText(node.textContent);
+      return;
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return;
+    }
+
+    const element = node as HTMLElement;
+
+    if (element.tagName === 'BR') {
+      pushLine(true);
+      return;
+    }
+
+    if (blockTags.has(element.tagName)) {
+      if (current) {
+        pushLine();
+      }
+
+      if (element.tagName === 'LI') {
+        const parent = element.parentElement;
+        if (parent?.tagName === 'OL') {
+          const siblings = Array.from(parent.children).filter((child) => child.tagName === 'LI');
+          const index = siblings.indexOf(element);
+          appendText(`${index + 1}. `);
+        } else {
+          appendText('• ');
+        }
+      }
+
+      const before = lines.length;
+      Array.from(element.childNodes).forEach(processNode);
+
+      if (current) {
+        pushLine();
+      } else if (lines.length === before) {
+        pushLine(true);
+      }
+      return;
+    }
+
+    Array.from(element.childNodes).forEach(processNode);
+  };
+
+  Array.from(clone.childNodes).forEach(processNode);
+
+  if (current !== '' || lines.length === 0) {
+    pushLine(lines.length === 0);
+  }
 
   while (lines.length > 1 && lines[lines.length - 1].trim() === '') {
     lines.pop();
