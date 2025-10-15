@@ -9,7 +9,7 @@
         <n-flex align="center" justify="center">
           <n-icon>
             <a href="https://github.com/sealdice/story-painter" target="_blank">
-              <logo-github/>
+              <logo-github />
             </a>
           </n-icon>
           <n-button type="primary" @click="backV1">官网</n-button>
@@ -28,7 +28,7 @@
             <div v-for="(i, index) in store.pcList">
               <div style="display: flex; align-items: center; width: 26rem;">
                 <n-button type="error" size="small" secondary style="padding: 0 1rem " @click="deletePc(index, i)"
-                          :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
+                  :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
                   <template #icon>
                     <n-icon>
                       <icon-delete></icon-delete>
@@ -37,18 +37,17 @@
                   <span v-if="notMobile">删除</span>
                 </n-button>
 
-                <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG" v-model:value="i.name"
-                         class="w-50 m-2"
-                         :prefix-icon="User" @focus="nameFocus(i)" @change="nameChanged(i)"/>
+                <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
+                  v-model:value="i.name" class="w-50 m-2" :prefix-icon="User" @focus="nameFocus(i)"
+                  @change="nameChanged(i)" />
 
-                <n-input :disabled="true" v-model:value="i.IMUserId" style="width: 24rem"/>
+                <n-input :disabled="true" v-model:value="i.IMUserId" style="width: 24rem" />
 
                 <n-select v-model:value="i.role" class="m-2 w-60" style="width: 24rem"
-                          :options="[{value: '主持人', label: '主持人'}, {value: '角色', label: '角色'}, {value: '骰子', label: '骰子'}, {value: '隐藏', label: '隐藏'}]"/>
+                  :options="[{ value: '主持人', label: '主持人' }, { value: '角色', label: '角色' }, { value: '骰子', label: '骰子' }, { value: '隐藏', label: '隐藏' }]" />
 
-                <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview
-                                :swatches="colors"
-                                :on-update:value="(v) => colorChanged(v, i)"/>
+                <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview :swatches="colors"
+                  :on-update:value="(v) => colorChanged(v, i)" />
               </div>
             </div>
           </div>
@@ -64,16 +63,13 @@
             </n-flex>
             <!-- <n-button @click="showPreview">预览</n-button> -->
             <div>
-              <n-checkbox label="预览" v-model:checked="isShowPreview" :border="true"
-                          @click="previewClick('preview')"/>
-              <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true"
-                          @click="previewClick('bbs')"/>
+              <n-checkbox label="预览" v-model:checked="isShowPreview" :border="true" @click="previewClick('preview')" />
+              <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true" @click="previewClick('bbs')" />
               <n-checkbox label="论坛代码(内容多行)" v-model:checked="isShowPreviewBBSPineapple" :border="true"
-                          @click="previewClick('bbspineapple')"/>
-              <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true"
-                          @click="previewClick('trg')"/>
+                @click="previewClick('bbspineapple')" />
+              <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true" @click="previewClick('trg')" />
             </div>
-            <n-divider vertical/>
+            <n-divider vertical />
             <div>
               <n-tooltip class="box-item" placement="top-start">
                 <template #trigger>
@@ -84,9 +80,8 @@
             </div>
           </n-flex>
 
-          <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)" ref="editor"
-                       class="mt-4"
-                       @change="onChange">
+          <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)"
+            ref="editor" class="mt-4" @change="onChange">
             <div class="z-50 absolute right-2 flex flex-col items-center">
               <div class="">
                 <n-button secondary @click="clearText" id="btnCopyPreviewBBS" type="primary" class="w-full">清空内容
@@ -97,7 +92,7 @@
               </div>
               <div class="mt-1">
                 <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false" class="w-full"
-                            @click.native="doEditorHighlightClick($event)"/>
+                  @click.native="doEditorHighlightClick($event)" />
               </div>
             </div>
           </code-mirror>
@@ -105,7 +100,8 @@
           <n-message-provider>
             <preview-main :is-show="isShowPreview" :preview-items="previewItems"></preview-main>
             <preview-bbs :is-show="isShowPreviewBBS" :preview-items="previewItems"></preview-bbs>
-            <preview-bbs-pineapple :is-show="isShowPreviewBBSPineapple" :preview-items="previewItems"></preview-bbs-pineapple>
+            <preview-bbs-pineapple :is-show="isShowPreviewBBSPineapple"
+              :preview-items="previewItems"></preview-bbs-pineapple>
             <preview-trg :is-show="isShowPreviewTRG" :preview-items="previewItems"></preview-trg>
           </n-message-provider>
         </n-spin>
@@ -241,8 +237,8 @@ function setupUA() {
   if (deviceType.type === 'mobile') {
     // 经测可以使用的
     switch (browser) {
-        // case '360 Browser': // 手机360 但是手机360无特征，自己是Chrome WebView
-        // 手机:X浏览器 Chrome WebView无特征
+      // case '360 Browser': // 手机360 但是手机360无特征，自己是Chrome WebView
+      // 手机:X浏览器 Chrome WebView无特征
       case 'Edge':
       case 'Chrome':
       case 'Chromium':
@@ -256,10 +252,10 @@ function setupUA() {
     switch (browser) {
       case 'baiduboxapp': // 手机:百度浏览器
       case 'QQBrowser': // 手机:搜狗浏览器极速版，手机:QQ浏览器
-        // 手机:万能浏览器，Chrome WebView无特征，会直接崩溃
+      // 手机:万能浏览器，Chrome WebView无特征，会直接崩溃
       case 'UCBrowser': // 手机:UC浏览器
       case 'Quark': // 手机:夸克
-        // 手机:Via浏览器，Chrome WebView无特征，会直接崩溃
+      // 手机:Via浏览器，Chrome WebView无特征，会直接崩溃
       case 'QQ': // 手机:QQ
       case 'WeChat':
         downloadUsableRank.value = 0
@@ -309,12 +305,12 @@ onMounted(async () => {
         updated_at: string,
       }
 
-      switch(record.client) {
-        case 'Parquet' : {
+      switch (record.client) {
+        case 'Parquet': {
           const uint8 = Uint8Array.from(atob(record.data), c => c.charCodeAt(0))
-          const asyncBuffer = await asyncBufferFrom({file: new File([uint8],'default'),byteLength:uint8.byteLength})
+          const asyncBuffer = await asyncBufferFrom({ file: new File([uint8], 'default'), byteLength: uint8.byteLength })
           const res = await parquetReadObjects({
-            file:asyncBuffer,
+            file: asyncBuffer,
             compressors,
           })
           nextTick(() => {
@@ -328,27 +324,27 @@ onMounted(async () => {
               version: 105
             })
             store.pcList.length = 0
-    
+
             logMan.lastText = '';
             logMan.syncChange(text, [0, store.editor.state.doc.length], [0, text.length])
           });
         }
-        break
-        case 'SealDice': 
+          break
+        case 'SealDice':
         default:
-        {
-          const log = unzlibSync(Uint8Array.from(atob(record.data), c => c.charCodeAt(0)));
+          {
+            const log = unzlibSync(Uint8Array.from(atob(record.data), c => c.charCodeAt(0)));
 
-          nextTick(() => {
-            const text = strFromU8(log)
-            store.pcList.length = 0
-    
-            logMan.lastText = '';
-            logMan.syncChange(text, [0, store.editor.state.doc.length], [0, text.length])
+            nextTick(() => {
+              const text = strFromU8(log)
+              store.pcList.length = 0
 
-          });
-        }
-        break
+              logMan.lastText = '';
+              logMan.syncChange(text, [0, store.editor.state.doc.length], [0, text.length])
+
+            });
+          }
+          break
       }
 
 
@@ -703,23 +699,23 @@ const deletePc = (index: number, i: CharItem) => {
     content: `即将删除角色「${i.name}」及其全部发言，确定吗？`,
     footer: () => [
       h(
-          NButton,
-          { type: 'default', onClick: () => m.destroy(), style: { marginRight: '1rem' } },
-          () => '取消',
+        NButton,
+        { type: 'default', onClick: () => m.destroy(), style: { marginRight: '1rem' } },
+        () => '取消',
       ),
       h(
-          NButton,
-          {
-            type: 'primary', onClick: () => {
-              try {
-                store.pcList.splice(index, 1);
-                logMan.deleteByCharItem(i);
-              } finally {
-                m.destroy()
-              }
+        NButton,
+        {
+          type: 'primary', onClick: () => {
+            try {
+              store.pcList.splice(index, 1);
+              logMan.deleteByCharItem(i);
+            } finally {
+              m.destroy()
             }
-          },
-          () => '确定'
+          }
+        },
+        () => '确定'
       ),
     ]
   })
@@ -762,30 +758,30 @@ const nameChanged = (i: CharItem) => {
       },
       content: () => [
         h(
-            NText,
-            { innerHTML: `即将进行名字变更 <b>${name1} -> ${name2}</b><br />将修改信息行，并在文本中进行批量替换（${name1w} 替换为 ${name2w}），确定吗？` },
+          NText,
+          { innerHTML: `即将进行名字变更 <b>${name1} -> ${name2}</b><br />将修改信息行，并在文本中进行批量替换（${name1w} 替换为 ${name2w}），确定吗？` },
         ),
       ],
       footer: () => [
         h(
-            NButton,
-            { type: 'default', onClick: () => m.destroy(), style: { marginRight: '1rem' } },
-            () => '取消',
+          NButton,
+          { type: 'default', onClick: () => m.destroy(), style: { marginRight: '1rem' } },
+          () => '取消',
         ),
         h(
-            NButton,
-            {
-              type: 'primary', onClick: () => {
-                try {
-                  logMan.rename(i, oldName, newName)
-                } catch (_e) {
-                  i.name = oldName;
-                } finally {
-                  m.destroy()
-                }
+          NButton,
+          {
+            type: 'primary', onClick: () => {
+              try {
+                logMan.rename(i, oldName, newName)
+              } catch (_e) {
+                i.name = oldName;
+              } finally {
+                m.destroy()
               }
-            },
-            () => '确定'
+            }
+          },
+          () => '确定'
         ),
       ]
     })
@@ -867,38 +863,38 @@ const doEditorHighlightClick = (e: any) => {
         content: '部分移动设备上的特定浏览器可能会因为兼容性问题而卡死，继续吗？',
         footer: () => [
           h(
-              NButton,
-              {
-                type: 'default',
-                onClick: () => {
-                  store.doEditorHighlight = false
-                  m.destroy()
-                  setTimeout(() => {
-                    doFlush()
-                  }, 3000)
-                },
-                style: { marginRight: '1rem' }
+            NButton,
+            {
+              type: 'default',
+              onClick: () => {
+                store.doEditorHighlight = false
+                m.destroy()
+                setTimeout(() => {
+                  doFlush()
+                }, 3000)
               },
-              () => '取消',
+              style: { marginRight: '1rem' }
+            },
+            () => '取消',
           ),
           h(
-              NButton,
-              {
-                type: 'primary', onClick: () => {
-                  try {
-                    doHl()
-                  } catch (_e) {
-                    // 重新关闭
-                    setTimeout(() => {
-                      store.doEditorHighlight = false
-                      store.reloadEditor()
-                    }, 500)
-                  } finally {
-                    m.destroy()
-                  }
+            NButton,
+            {
+              type: 'primary', onClick: () => {
+                try {
+                  doHl()
+                } catch (_e) {
+                  // 重新关闭
+                  setTimeout(() => {
+                    store.doEditorHighlight = false
+                    store.reloadEditor()
+                  }, 500)
+                } finally {
+                  m.destroy()
                 }
-              },
-              () => '确定'
+              }
+            },
+            () => '确定'
           ),
         ]
       })
@@ -928,18 +924,18 @@ const code = ref("")
   width: 50%;
 }
 
-.options > div {
+.options>div {
   width: 30rem;
   max-width: 30rem;
   margin-bottom: 2rem;
 }
 
-.options > div > .switch {
+.options>div>.switch {
   display: flex;
   align-items: center;
   justify-content: center;
 
-  & > h4 {
+  &>h4 {
     margin-top: 0rem;
     margin-bottom: 0rem;
     margin-left: 1rem;

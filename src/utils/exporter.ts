@@ -161,6 +161,8 @@ function buildDocxParagraphs(entry: DocxExportEntry): Paragraph[] {
     runs.push(new TextRun({ text: '' }));
   }
 
+  const continuationIndentTwip = 800; // ~=0.55in -> roughly 3.75 monospace characters
+
   const paragraphs: Paragraph[] = [
     new Paragraph({
       children: runs,
@@ -170,18 +172,13 @@ function buildDocxParagraphs(entry: DocxExportEntry): Paragraph[] {
   ];
 
   lines.forEach((line) => {
-    if (!line) {
-      paragraphs.push(new Paragraph({
-        children: [new TextRun({ text: '' })],
-        spacing: { after: 120 },
-        alignment: AlignmentType.LEFT,
-      }));
-      return;
-    }
+    const childRun = line
+      ? new TextRun({ text: line, color: messageColor })
+      : new TextRun({ text: '' });
 
     paragraphs.push(new Paragraph({
-      children: [new TextRun({ text: line, color: messageColor })],
-      indent: { left: 720 },
+      children: [childRun],
+      indent: { left: continuationIndentTwip },
       spacing: { after: 120 },
       alignment: AlignmentType.LEFT,
     }));
