@@ -1,4 +1,5 @@
 import { Tag } from "@lezer/highlight"
+import { qqOfficialFaceAtStart } from "./qqOfficialFace"
 import {
   LanguageSupport,
   StreamLanguage,
@@ -134,6 +135,12 @@ export function generateLang(pcList: CharItem[], options: any = undefined): Exte
           if (m) {
             // stream.pos -= m[0].length
             // stream.start -= m[0].length
+            state.text = ''
+            return `image-${state.name}`
+          }
+
+          m = stream.match(qqOfficialFaceAtStart) as RegExpMatchArray
+          if (m) {
             state.text = ''
             return `image-${state.name}`
           }
