@@ -1,8 +1,9 @@
 import { useStore } from "~/store";
 import { CharItem, LogItem, packNameId } from "../types";
 import { LogImporter, TextInfo } from "./_logImpoter";
+import { reEditLogTest, unwrapName } from "../editLogHeader";
 
-export const reEditLogTest = /^([^(<\n]+)(\(([^(\n]+)\)|\<[^(\n]+\>)?(\s+)(\d{4}\/\d{1,2}\/\d{1,2} )?(\d{1,2}:\d{1,2}:\d{2})( #\d+)?$/m
+export { reEditLogTest } from "../editLogHeader";
 export const reEditLog = new RegExp(reEditLogTest, 'gm')
 
 
@@ -43,7 +44,7 @@ export class EditLogImporter extends LogImporter {
         }
 
         const item = {} as LogItem;
-        item.nickname = m[1];
+        item.nickname = unwrapName(m[1]);
         [item.time, item.timeText] = this.parseTime((m[5] || '') + m[6]);
         item.message = '';
         if (m[2]) {

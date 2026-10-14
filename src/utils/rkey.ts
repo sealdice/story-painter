@@ -1,3 +1,5 @@
+import { decodeCqParameter, encodeCqParameter } from './cqImage'
+
 export interface RKeyPayload {
   private_rkey?: string
   group_rkey?: string
@@ -53,7 +55,9 @@ function replaceMessage(message: string, payload: RKeyPayload) {
 
   const cqURLRe = /(url=|file=)(https?:\/\/(?:multimedia\.nt\.qq\.com\.cn|gchat\.qpic\.cn)[^,\]\s]+)/g
   updated = updated.replace(cqURLRe, (_m, prefix: string, url: string) => {
-    return `${prefix}${updateURL(url, payload)}`
+    const decoded = decodeCqParameter(url)
+    const next = updateURL(decoded, payload)
+    return `${prefix}${next === decoded ? url : encodeCqParameter(next)}`
   })
 
   const bracketRe = /(\[(?:image|图):)(https?:\/\/(?:multimedia\.nt\.qq\.com\.cn|gchat\.qpic\.cn)[^\]\s]+)(\])/g
