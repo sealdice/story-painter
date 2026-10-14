@@ -16,6 +16,8 @@ export default defineConfig({
     },
   },
   base: './',
+  // 暴露非 VITE_ 前缀的环境变量给客户端（LOG_API_BASE / RKEY_API_BASE）
+  envPrefix: ['VITE_', 'LOG_', 'RKEY_'],
   plugins: [
     vue(),
     Components({
