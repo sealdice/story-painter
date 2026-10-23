@@ -1,113 +1,203 @@
 <template>
-  <n-layout>
-    <n-layout-header class="bg-slate-100 dark:bg-inherit">
-      <n-flex class="py-3 text-2xl" size="large" align="center" justify="center" wrap>
-        <n-flex align="center" justify="center">
-          <strong>海豹TRPG跑团Log着色器</strong>
-          <n-tag type="success" size="small" :bordered="false">v2.5.4</n-tag>
-        </n-flex>
-        <n-flex align="center" justify="center">
-          <n-icon>
-            <a href="https://github.com/sealdice/story-painter" target="_blank">
-              <logo-github />
-            </a>
-          </n-icon>
-          <n-button type="primary" @click="backV1">官网</n-button>
-        </n-flex>
-      </n-flex>
-    </n-layout-header>
-    <n-layout-content class="bg-slate-100 dark:bg-inherit">
-      <div style="width: 1000px; margin: 0 auto; max-width: 100%; padding-bottom: 3rem">
-        <n-text type="info" italic class="block text-center my-1">SealDice骰QQ群 524364253 [群介绍中有其余3群]</n-text>
-        <option-view></option-view>
-        <n-spin :show="loading">
-          <template #description>
-            正在试图加载远程记录……
-          </template>
-          <div class="pc-list">
-            <div v-for="(i, index) in store.pcList">
-              <div style="display: flex; align-items: center; width: 26rem;">
-                <n-button type="error" size="small" secondary style="padding: 0 1rem " @click="deletePc(index, i)"
-                  :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
-                  <template #icon>
-                    <n-icon>
-                      <icon-delete></icon-delete>
-                    </n-icon>
+  <div class="min-h-screen bg-background">
+    <header class="sticky top-0 z-40 h-14 border-b bg-background">
+      <div class="mx-auto flex h-full max-w-[1100px] items-center justify-between px-4">
+        <div class="flex items-center gap-3">
+          <img :src="logoUrl" alt="海豹" class="h-7 w-7 shrink-0 object-contain" />
+          <h1 class="text-lg font-bold tracking-tight text-brand-600 dark:text-brand-400">海豹TRPG</h1>
+          <n-tag size="small" :bordered="false" type="primary">v2.5.5</n-tag>
+        </div>
+        <div class="flex items-center gap-2">
+          <n-button quaternary size="small" @click="toggleDark()" :title="isDark ? '切换至亮色模式' : '切换至深色模式'"
+            :aria-label="isDark ? '切换至亮色模式' : '切换至深色模式'">
+            <template #icon>
+              <n-icon>
+                <svg v-if="isDark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              </n-icon>
+            </template>
+            <span class="hidden sm:inline">{{ isDark ? '亮色' : '深色' }}</span>
+          </n-button>
+          <n-button quaternary size="small" square tag="a" href="https://github.com/sealdice/story-painter"
+            target="_blank" :title="'GitHub'" :aria-label="'GitHub'">
+            <template #icon>
+              <n-icon>
+                <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path fill="currentColor"
+                    d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9 23.5 23.2 38.1 55.4 38.1 91v112.5c0.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z" />
+                </svg>
+              </n-icon>
+            </template>
+          </n-button>
+          <n-button quaternary size="small" tag="a" href="https://www.sealdice.com" target="_blank"
+            :title="'海豹官网'" :aria-label="'海豹官网'">
+            <template #icon>
+              <n-icon><launch /></n-icon>
+            </template>
+            官网
+          </n-button>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-[1100px] px-4 py-6 space-y-6 pb-12">
+      <div class="flex flex-wrap items-center justify-between gap-3 animate-fade-in">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight">跑团日志着色</h2>
+          <p class="text-sm text-muted-foreground">粘贴或导入跑团日志，自动识别角色并染色，支持多种格式预览与导出</p>
+          <p class="mt-2 text-sm text-brand-600 dark:text-brand-400">SealDice骰QQ群 524364253 [群介绍中有其余3群]</p>
+        </div>
+      </div>
+
+      <section class="dn-card animate-fade-in">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h3 class="dn-card-title">渲染选项</h3>
+            <p class="dn-card-desc">控制预览与导出内容的显示细节</p>
+          </div>
+          <n-button quaternary size="small" class="self-start"
+            @click="renderOptionsExpanded = !renderOptionsExpanded" :aria-expanded="renderOptionsExpanded">
+            <template #icon>
+              <n-icon><chevron-up v-if="renderOptionsExpanded" /><chevron-down v-else /></n-icon>
+            </template>
+            {{ renderOptionsExpanded ? '收起' : '展开' }}
+          </n-button>
+        </div>
+        <n-collapse-transition :show="renderOptionsExpanded">
+          <div class="pt-4">
+            <option-view></option-view>
+          </div>
+        </n-collapse-transition>
+      </section>
+
+      <n-spin :show="loading">
+        <template #description>
+          正在试图加载远程记录……
+        </template>
+        <div class="space-y-6">
+          <section class="dn-card animate-fade-in">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 class="dn-card-title">
+                  角色列表
+                  <n-tag size="small" :bordered="false">{{ store.pcList.length }}</n-tag>
+                </h3>
+                <p class="dn-card-desc">修改角色名称、类型与颜色，颜色将同步到预览与导出</p>
+              </div>
+              <div class="flex items-center gap-2 ml-auto self-start">
+                <n-tooltip placement="top-end">
+                  <template #trigger>
+                    <n-button size="small" @click="refreshColors">刷新色板</n-button>
                   </template>
-                  <span v-if="notMobile">删除</span>
+                  重新随机生成颜色选择中的预置颜色
+                </n-tooltip>
+                <n-button quaternary size="small" class="self-start"
+                  @click="charactersExpanded = !charactersExpanded" :aria-expanded="charactersExpanded">
+                  <template #icon>
+                    <n-icon><chevron-up v-if="charactersExpanded" /><chevron-down v-else /></n-icon>
+                  </template>
+                  {{ charactersExpanded ? '收起' : '展开' }}
                 </n-button>
-
-                <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
-                  v-model:value="i.name" class="w-50 m-2" :prefix-icon="User" @focus="nameFocus(i)"
-                  @change="nameChanged(i)" />
-
-                <n-input :disabled="true" v-model:value="i.IMUserId" style="width: 24rem" />
-
-                <n-select v-model:value="i.role" class="m-2 w-60" style="width: 24rem"
-                  :options="[{ value: '主持人', label: '主持人' }, { value: '角色', label: '角色' }, { value: '骰子', label: '骰子' }, { value: '隐藏', label: '隐藏' }]" />
-
-                <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview :swatches="colors"
-                  :on-update:value="(v) => colorChanged(v, i)" />
               </div>
             </div>
-          </div>
+            <n-collapse-transition :show="charactersExpanded">
+              <div class="pc-list pt-4">
+                <div v-for="(i, index) in store.pcList" :key="i.IMUserId + '-' + index" class="pc-card">
+                  <label class="pc-field">
+                    <span class="pc-field-label">姓名</span>
+                    <n-input :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG"
+                      v-model:value="i.name" :prefix-icon="User" @focus="nameFocus(i)" @change="nameChanged(i)" />
+                  </label>
 
-          <n-flex size="small" justify="center" align="center" class="my-4">
-            <n-flex size="small" justify="center" align="center" class="mr-2">
-              <n-button secondary type="primary" @click="exportRecordRaw">下载原始文件</n-button>
+                  <label class="pc-field">
+                    <span class="pc-field-label">平台账号</span>
+                    <n-input :disabled="true" v-model:value="i.IMUserId" />
+                  </label>
+
+                  <label class="pc-field">
+                    <span class="pc-field-label">类型</span>
+                    <n-select v-model:value="i.role"
+                      :options="[{ value: '主持人', label: '主持人' }, { value: '角色', label: '角色' }, { value: '骰子', label: '骰子' }, { value: '隐藏', label: '隐藏' }]" />
+                  </label>
+
+                  <label class="pc-field">
+                    <span class="pc-field-label">颜色</span>
+                    <n-color-picker v-model:value="i.color" :show-alpha="false" show-preview
+                      :swatches="colors" :on-update:value="(v: string) => colorChanged(v, i)" />
+                  </label>
+
+                  <n-button class="pc-delete" type="error" size="small" secondary @click="deletePc(index, i)"
+                    :disabled="isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG">
+                    <template #icon><n-icon><icon-delete /></n-icon></template>
+                    删除
+                  </n-button>
+                </div>
+                <n-empty v-if="store.pcList.length === 0" description="导入或粘贴日志后，将在这里显示识别到的角色" />
+              </div>
+            </n-collapse-transition>
+          </section>
+
+          <section class="dn-card animate-fade-in">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h3 class="dn-card-title">日志编辑</h3>
+                <p class="dn-card-desc">在编辑器中粘贴日志文本，自动解析并染色；勾选下方选项切换预览</p>
+              </div>
+              <n-flex size="small" wrap class="items-center">
+                <n-checkbox label="预览" v-model:checked="isShowPreview" @click="previewClick('preview')" />
+                <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" @click="previewClick('bbs')" />
+                <n-checkbox label="论坛代码(内容多行)" v-model:checked="isShowPreviewBBSPineapple"
+                  @click="previewClick('bbspineapple')" />
+                <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" @click="previewClick('trg')" />
+              </n-flex>
+            </div>
+
+            <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)"
+              ref="editor" @change="onChange">
+              <div class="z-50 absolute right-2 flex flex-col items-center gap-1">
+                <n-button size="small" secondary type="primary" @click="clearText" id="btnCopyPreviewBBS" class="w-full">
+                  清空内容
+                </n-button>
+                <n-button size="small" secondary type="primary" @click="doFlush" class="w-full">强制刷新</n-button>
+                <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false" class="w-full"
+                  @click.native="doEditorHighlightClick($event)" />
+              </div>
+            </code-mirror>
+
+            <n-message-provider>
+              <preview-main :is-show="isShowPreview" :preview-items="previewItems"></preview-main>
+              <preview-bbs :is-show="isShowPreviewBBS" :preview-items="previewItems"></preview-bbs>
+              <preview-bbs-pineapple :is-show="isShowPreviewBBSPineapple"
+                :preview-items="previewItems"></preview-bbs-pineapple>
+              <preview-trg :is-show="isShowPreviewTRG" :preview-items="previewItems"></preview-trg>
+            </n-message-provider>
+          </section>
+
+          <section class="dn-card animate-fade-in">
+            <div class="mb-4">
+              <h3 class="dn-card-title">导出</h3>
+              <p class="dn-card-desc">将日志导出为原始文本或带格式的文档</p>
+            </div>
+            <n-flex size="small" wrap>
+              <n-button type="primary" @click="exportRecordRaw">下载原始文件</n-button>
               <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordQQ">下载QQ风格记录</n-button>-->
               <!-- <n-button secondary type="primary" v-show="false" @click="exportRecordIRC">下载IRC风格记录</n-button>-->
               <n-button secondary type="primary" @click="exportRecordDOC">下载带图doc</n-button>
               <n-button secondary type="primary" @click="exportRecordTalkDOC">下载对话doc</n-button>
               <n-button secondary type="primary" @click="exportRecordDocx">下载docx</n-button>
             </n-flex>
-            <!-- <n-button @click="showPreview">预览</n-button> -->
-            <div>
-              <n-checkbox label="预览" v-model:checked="isShowPreview" :border="true" @click="previewClick('preview')" />
-              <n-checkbox label="论坛代码" v-model:checked="isShowPreviewBBS" :border="true" @click="previewClick('bbs')" />
-              <n-checkbox label="论坛代码(内容多行)" v-model:checked="isShowPreviewBBSPineapple" :border="true"
-                @click="previewClick('bbspineapple')" />
-              <n-checkbox label="回声工坊" v-model:checked="isShowPreviewTRG" :border="true" @click="previewClick('trg')" />
-            </div>
-            <n-divider vertical />
-            <div>
-              <n-tooltip class="box-item" placement="top-start">
-                <template #trigger>
-                  <n-button type="primary" text @click="refreshColors">刷新色板</n-button>
-                </template>
-                重新随机生成上方颜色选择中的预置颜色
-              </n-tooltip>
-            </div>
-          </n-flex>
-
-          <code-mirror v-show="!(isShowPreview || isShowPreviewBBS || isShowPreviewBBSPineapple || isShowPreviewTRG)"
-            ref="editor" class="mt-4" @change="onChange">
-            <div class="z-50 absolute right-2 flex flex-col items-center">
-              <div class="">
-                <n-button secondary @click="clearText" id="btnCopyPreviewBBS" type="primary" class="w-full">清空内容
-                </n-button>
-              </div>
-              <div class="mt-1">
-                <n-button secondary @click="doFlush" type="primary" class="w-full">强制刷新</n-button>
-              </div>
-              <div class="mt-1">
-                <n-checkbox label="编辑器染色" v-model:checked="store.doEditorHighlight" :border="false" class="w-full"
-                  @click.native="doEditorHighlightClick($event)" />
-              </div>
-            </div>
-          </code-mirror>
-
-          <n-message-provider>
-            <preview-main :is-show="isShowPreview" :preview-items="previewItems"></preview-main>
-            <preview-bbs :is-show="isShowPreviewBBS" :preview-items="previewItems"></preview-bbs>
-            <preview-bbs-pineapple :is-show="isShowPreviewBBSPineapple"
-              :preview-items="previewItems"></preview-bbs-pineapple>
-            <preview-trg :is-show="isShowPreviewTRG" :preview-items="previewItems"></preview-trg>
-          </n-message-provider>
-        </n-spin>
-      </div>
-    </n-layout-content>
-  </n-layout>
+          </section>
+        </div>
+      </n-spin>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -133,8 +223,8 @@ import { LogItem, CharItem, packNameId } from "./logManager/types";
 import { setCharInfo } from './logManager/importers/_logImpoter'
 import { applyQQImageRKeyReplacement, shouldApplyQQImageRKeyReplacement, msgCommandFormat, msgImageFormat, msgIMUseridFormat, msgOffTopicFormat, msgAtFormat } from "./utils";
 import { NButton, NText, useMessage, useModal, useNotification } from "naive-ui";
-import { User, LogoGithub, Delete as IconDelete } from '@vicons/carbon'
-import { breakpointsTailwind, useBreakpoints, useDark, useToggle } from '@vueuse/core'
+import { User, Delete as IconDelete, ChevronDown, ChevronUp, Launch } from '@vicons/carbon'
+import { useDark, useToggle } from '@vueuse/core'
 import OptionView from "./components/OptionView.vue";
 import randomColor from "randomcolor";
 
@@ -142,9 +232,8 @@ import { parquetReadObjects } from 'hyparquet'
 import { asyncBufferFrom } from 'hyperparam'
 import { compressors } from 'hyparquet-compressors'
 
+const logoUrl = 'data:image/webp;base64,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'
 
-const breakpoints = useBreakpoints(breakpointsTailwind)
-const notMobile = breakpoints.greater('sm')
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
@@ -166,6 +255,8 @@ const isShowPreview = ref(false)
 const isShowPreviewBBS = ref(false)
 const isShowPreviewBBSPineapple = ref(false)
 const isShowPreviewTRG = ref(false)
+const renderOptionsExpanded = ref(false)
+const charactersExpanded = ref(false)
 
 const colors = ref<string[]>([])
 const refreshColors = () => {
@@ -180,8 +271,7 @@ const colorChanged = debounce((v: string, i: CharItem) => {
 }, 300)
 
 const backV1 = () => {
-  // location.href = location.origin + '/v1/' + location.search + location.hash;
-  location.href = 'https://dice.weizaima.com';
+  // 预留：官网跳转
 }
 
 // 清空文本
@@ -966,9 +1056,66 @@ const code = ref("")
 }
 
 .pc-list {
-  display: flex;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pc-card {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1.25fr) minmax(10rem, 1fr) minmax(8rem, 0.72fr) minmax(9rem, 0.8fr) auto;
   align-items: center;
-  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--muted) / 0.28);
+}
+
+.pc-field {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pc-field-label {
+  flex: none;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pc-field :deep(.n-input),
+.pc-field :deep(.n-base-selection),
+.pc-field :deep(.n-color-picker) {
+  min-width: 0;
+  flex: 1;
+}
+
+.pc-delete {
+  justify-self: end;
+}
+
+@media (max-width: 900px) {
+  .pc-card {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .pc-delete {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .pc-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pc-delete {
+    grid-column: 1;
+    width: 100%;
+  }
 }
 
 #app {

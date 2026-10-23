@@ -1,17 +1,27 @@
 {
   "name": "story-painter",
-  "version": "2.5.3",
+  "version": "2.5.5",
   "private": true,
   "license": "MIT",
+  "engines": {
+    "node": ">=26.12.1 <27"
+  },
   "type": "module",
   "scripts": {
+    "pretest": "node scripts/check-node-version.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "predev": "node scripts/check-node-version.mjs",
     "dev": "vite",
+    "prebuild": "node scripts/check-node-version.mjs",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.0",
     "@codemirror/commands": "^6.7.1",
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@codemirror/language": "^6.10.3",
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.34.2",

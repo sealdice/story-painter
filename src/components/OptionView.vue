@@ -53,24 +53,24 @@ const list: Option[] = [
 </script>
 
 <template>
-  <n-grid cols="1 640:2" :x-gap="6" :y-gap="24" class="p-5">
+  <n-grid cols="1 640:2" :x-gap="24" :y-gap="8" responsive="screen">
     <n-grid-item v-for="opt in list">
-      <n-flex align="center" justify="center" vertical>
-        <n-flex align="center" justify="center">
-          <n-switch v-model:value="option_store[opt.key]"></n-switch>
-          <strong>{{ opt.label }}</strong>
-        </n-flex>
-        <p>{{ opt.desc }}</p>
-      </n-flex>
+      <label class="flex items-center justify-between gap-4 rounded-md px-3 py-2.5 transition-colors hover:bg-accent cursor-pointer">
+        <span>
+          <span class="block text-sm font-medium">{{ opt.label }}</span>
+          <span class="block text-xs text-muted-foreground mt-0.5">{{ opt.desc }}</span>
+        </span>
+        <n-switch v-model:value="option_store[opt.key]" />
+      </label>
     </n-grid-item>
     <n-grid-item>
-      <n-flex align="center" justify="center" vertical>
-        <n-flex align="center" justify="center">
-          <n-switch v-model:value="isDark" @on-update:value="useToggle"></n-switch>
-          <strong>深色模式展示</strong>
-        </n-flex>
-        <p>开启后，以深色模式展示，适合夜间使用</p>
-      </n-flex>
+      <label class="flex items-center justify-between gap-4 rounded-md px-3 py-2.5 transition-colors hover:bg-accent cursor-pointer">
+        <span>
+          <span class="block text-sm font-medium">深色模式</span>
+          <span class="block text-xs text-muted-foreground mt-0.5">开启后，以深色模式展示，适合夜间使用</span>
+        </span>
+        <n-switch v-model:value="isDark" @on-update:value="useToggle" />
+      </label>
     </n-grid-item>
   </n-grid>
 </template>

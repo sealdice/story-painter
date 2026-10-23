@@ -1,3 +1,6 @@
+import { stripQQOfficialFaces } from './qqOfficialFace';
+import { cqImageHtml } from './cqImage';
+
 export * from './types';
 export * from './rkey';
 // export * from './helpers';
@@ -34,6 +37,7 @@ export function getCanvasFontSize(el = document.body) {
 export function msgImageFormat(msg: string, options: any, htmlText = false) {
   // 替换图片、表情
   if (options.imageHide) {
+    msg = stripQQOfficialFaces(msg)
     msg = msg.replaceAll(/\[CQ:(image|face)(,summary=\[动画表情\])?,[^\]]+\]/g, '')
   } else {
     if (htmlText) {
@@ -44,7 +48,7 @@ export function msgImageFormat(msg: string, options: any, htmlText = false) {
       // [CQ:image,file=...,url=...]
       msg = msg.replaceAll(/\[CQ:image,[^\]]+?url=([^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
       // [CQ:image,file=https?://...]
-      msg = msg.replaceAll(/\[CQ:image,file=(https?:\/\/[^\]]+)\]/g, '<img style="max-width: 300px" src="$1" />')
+      msg = msg.replaceAll(/\[CQ:image,file=(https?:\/\/[^\]]+)\]/g, (_match, url: string) => cqImageHtml(url))
       // [CQ:image,file=725BAB58A963A84E1A3BO1F3FCA7F1DF.jpg]
       msg = msg.replaceAll(/\[CQ:image,file=([A-Za-z0-9]{32,64})(\.[a-zA-Z]+?)\]/g, '<img style="max-width: 300px" src="https://gchat.qpic.cn/gchatpic_new/0/0-0-$1/0?term=2,subType=1" />')
       // [CQ:image,file=file://C:/UsersAdministrator/Documents/Tencent Files/123/nt_gq/nt_datalPic\2024-03\Ori\53160996bad0f318aef05dfd82cc7f53.jpg]

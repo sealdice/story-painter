@@ -20,13 +20,14 @@ jobs:
           run_install: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26.x'
+          check-latest: true
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: node scripts/check-node-version.mjs && pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm run build

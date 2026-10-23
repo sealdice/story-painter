@@ -6,7 +6,8 @@ import { CharItem, LogItem, packNameId } from './logManager/types';
 import { random } from 'lodash-es';
 import * as twColors from 'tailwindcss/colors';
 
-const diceAPIBase = 'https://dice-api.weizaima.com/dice/api';
+const diceAPIBase = import.meta.env.LOG_API_BASE || 'https://dice-api.weizaima.com/dice/api';
+const rkeyAPIBase = import.meta.env.RKEY_API_BASE || 'https://dice-api.weizaima.com/api/v1/rkey';
 
 export const useStore = defineStore('main', {
   state: () => {
@@ -144,7 +145,7 @@ export const useStore = defineStore('main', {
     },
 
     async tryFetchRKey() {
-      const resp = await axios.get('https://dice-api.weizaima.com/api/v1/rkey')
+      const resp = await axios.get(rkeyAPIBase)
       return resp.data as {
         private_rkey?: string
         group_rkey?: string

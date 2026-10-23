@@ -61,6 +61,22 @@ function getExts(highlight = false) {
       }
     }),
     isDark.value ? materialDark : materialLight,
+    EditorView.theme({
+      '&': {
+        backgroundColor: isDark.value ? '#0b1220' : '#dfe6ef',
+        fontFamily: "'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', 'Microsoft YaHei UI', monospace",
+      },
+      '.cm-scroller': {
+        fontFamily: 'inherit',
+      },
+      '.cm-gutters': {
+        backgroundColor: isDark.value ? '#111827' : '#cbd5e1',
+        borderRightColor: isDark.value ? '#253047' : '#b6c2d2',
+      },
+      '.cm-activeLine, .cm-activeLineGutter': {
+        backgroundColor: isDark.value ? '#172033' : '#d2dbe7',
+      },
+    }, { dark: isDark.value }),
   ]
 }
 
@@ -321,15 +337,24 @@ onMounted(() => {
 .cm-editor {
   /* height: v-bind("$props.initHeight"); */
   height: 50rem;
-  font-size: 18px;
-
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', 'Microsoft YaHei UI', monospace;
+  font-size: 16px;
+  line-height: 1.65;
   outline: 0 !important;
-  /* height: 50rem; */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 
 .codemirror {
   height: 50rem;
+  overflow: hidden;
+  border-color: #b6c2d2;
+  border-radius: var(--radius);
+  background: #dfe6ef;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.dark .codemirror {
+  border-color: #253047;
+  background: #0b1220;
 }
 
 .test {
