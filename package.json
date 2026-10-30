@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
+    "test": "vitest run",
     "lint": "vue-tsc --noEmit"
   },
   "dependencies": {
@@ -57,6 +58,7 @@
     "typescript": "^5.6.3",
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.10",
+    "vitest": "^3.2.7",
     "vue-tsc": "^2.1.10"
   }
 }

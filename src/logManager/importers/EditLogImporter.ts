@@ -1,8 +1,9 @@
 import { useStore } from "~/store";
+import { reEditLogHeader } from "../logHeader";
 import { CharItem, LogItem, packNameId } from "../types";
 import { LogImporter, TextInfo } from "./_logImpoter";
 
-export const reEditLogTest = /^([^(<\n]+)(\(([^(\n]+)\)|\<[^(\n]+\>)?(\s+)(\d{4}\/\d{1,2}\/\d{1,2} )?(\d{1,2}:\d{1,2}:\d{2})( #\d+)?$/m
+export const reEditLogTest = reEditLogHeader
 export const reEditLog = new RegExp(reEditLogTest, 'gm')
 
 
